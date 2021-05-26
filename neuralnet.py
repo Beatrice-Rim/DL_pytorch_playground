@@ -1,15 +1,6 @@
-from sklearn.datasets import make_moons, make_blobs, make_circles
-import numpy as np
-from IPython.display import display
-from ipywidgets import interactive
-import matplotlib.pyplot as plt
-%matplotlib inline
-from itertools import cycle
-from IPython.display import clear_output
-from scipy.special import expit
-import torch
 from torch import nn
-from functools import partial
+from copy import deepcopy
+
 
 def build_nn(additional_features, activation, num_hidden_layers, hidden_dim):
     if additional_features == 'original':

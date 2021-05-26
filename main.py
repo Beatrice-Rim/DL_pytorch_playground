@@ -1,15 +1,25 @@
 from sklearn.datasets import make_moons, make_blobs, make_circles
 import numpy as np
-from IPython.display import display
-from ipywidgets import interactive
-import matplotlib.pyplot as plt
-%matplotlib inline
-from itertools import cycle
-from IPython.display import clear_output
-from scipy.special import expit
 import torch
 from torch import nn
+
 from functools import partial
+import argparse
+
+from neuralnet import build_nn
+from train import train
+
+parser = argparse.ArgumentParser(description='Launch model training')
+parser.add_argument('--dataset', type=str, choices=['moons', 'blobs', 'circles'], default='moons')
+parser.add_argument('--additional_features', type=str, choices=['original', 'squares', 'sin', 'both'], default='original')
+parser.add_argument('--activation', type=str, choices=['sigmoid', 'tanh', 'relu'], default='sigmoid')
+parser.add_argument('--num_hidden_layers', type=int, default=2)
+parser.add_argument('--hidden_dim', type=int, default=32)
+parser.add_argument('--n_epochs', type=int, default=100)
+parser.add_argument('--lr', type=float, default=1e-3)
+parser.add_argument('--run', action='store_true', default=False)
+parser.add_argument('--device', type=str, default='cpu')
+
 
 def main(dataset, additional_features, activation, num_hidden_layers, hidden_dim, n_epochs, lr, run, device):
     if dataset == 'moons':
@@ -44,15 +54,8 @@ def main(dataset, additional_features, activation, num_hidden_layers, hidden_dim
         criterion = nn.BCEWithLogitsLoss()
         optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9)
         train(net, X, y, additional_features, criterion, optimizer, n_epochs, device)
-        
-interactive(main, 
-            dataset=['moons', 'blobs', 'circles'], 
-            additional_features=['original', 'squares', 'sin', 'both'],
-            activation=['tanh', 'sigmoid', 'relu'],
-            num_hidden_layers=(1, 5),
-            hidden_dim=(4, 64, 10),
-            n_epochs=(1, 100),
-            lr=(1e-4, 1e-2, 5e-4),
-            run=False,
-            device=['cpu', 'cuda']
-           )
+
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    main(**vars(args))

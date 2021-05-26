@@ -1,15 +1,8 @@
-from sklearn.datasets import make_moons, make_blobs, make_circles
 import numpy as np
-from IPython.display import display
-from ipywidgets import interactive
 import matplotlib.pyplot as plt
-%matplotlib inline
-from itertools import cycle
 from IPython.display import clear_output
 from scipy.special import expit
 import torch
-from torch import nn
-from functools import partial
 
 
 def plot_level_lines(model, data, labels, additional_features, size=100, make_new_figure=True, scatter=True, epoch=None, acc=None):
@@ -35,12 +28,10 @@ def plot_level_lines(model, data, labels, additional_features, size=100, make_ne
         test_data = np.hstack([test_data, np.sin(test_data)])
     if add == 'both':
         test_data = np.hstack([test_data, test_data**2, test_data[:, [0]]*test_data[:, [1]], np.sin(test_data)])
-    
-    
-    
+
     model.eval()
     with torch.no_grad():
-        predictions = model(torch.FloatTensor(test_data)).cpu().numpy().reshape((size, size)) # these are raw scores
+        predictions = model(torch.FloatTensor(test_data)).cpu().numpy().reshape((size, size))  # these are raw scores
     
     predictions = expit(predictions)
     plt.contourf(all_x, all_y, predictions)
